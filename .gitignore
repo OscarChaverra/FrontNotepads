@@ -1,0 +1,11 @@
+# Ignorar carpetas completas
+backend/
+basesDatos/
+LoginGoogle/
+Recuperacion_Contraseña/
+Testing/
+
+# Ignorar archivos específicos en cualquier subcarpeta
+**/test.html
+**/test.js
+**/test.css
