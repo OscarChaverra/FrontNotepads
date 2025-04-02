@@ -1,3 +1,122 @@
+function validatePassword(password) {
+    const minLength = /.{8,}/;
+    const easyPattern = /^(?:\d+|[a-z]+)$/i;
+    const tooManyNumbers = /^(?=(.*\d){5,})/;
+
+    if (!minLength.test(password)) {
+        return { isValid: false, message: "La contraseña debe tener al menos 8 caracteres." };
+    }
+    
+    if (easyPattern.test(password)) {
+        return { isValid: false, message: "La contraseña es demasiado sencilla. Usa una combinación de letras, números y símbolos." };
+    }
+
+    if (tooManyNumbers.test(password)) {
+        return { isValid: false, message: "La contraseña tiene demasiados números. Agrega letras y símbolos." };
+    }
+
+    if (!/[A-Z]/.test(password)) {
+        return { isValid: false, message: "La contraseña debe contener al menos una letra mayúscula." };
+    }
+
+    if (!/\d/.test(password)) {
+        return { isValid: false, message: "La contraseña debe contener al menos un número." };
+    }
+
+    if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+        return { isValid: false, message: "La contraseña debe contener al menos un carácter especial." };
+    }
+
+    return { isValid: true };
+}
+
+// Evento al enviar el formulario de registro
+// Evento al enviar el formulario de registro (versión mejorada)
+document.getElementById("signup-form").addEventListener("submit", async function(event) {
+    event.preventDefault();
+    removeAllMessages();
+
+    const username = document.getElementById("username").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+
+    // Validación frontend unificada
+    let errors = [];
+    
+    if (!username) errors.push("El nombre de usuario es obligatorio.");
+    if (!email) errors.push("El correo electrónico es obligatorio.");
+    
+    const passwordValidation = validatePassword(password);
+    if (!passwordValidation.isValid) {
+        errors.push(passwordValidation.message);
+    }
+
+    if (errors.length > 0) {
+        showMessage("Error", errors.join("<br>"), "error", 8000);
+        return;
+    }
+
+    // Si pasa validación frontend, proceder con el envío
+    if (formSubmitting) return;
+    formSubmitting = true;
+    
+    const submitButton = this.querySelector('button[type="submit"]');
+    submitButton.disabled = true;
+    submitButton.textContent = 'Registrando...';
+
+    try {
+        const response = await fetch('http://127.0.0.1:8000/users/signup/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, email, password })
+        });
+
+        const data = await response.json();
+        
+        if (!response.ok) {
+            // Manejo de errores del backend
+            let backendErrors = [];
+            
+            if (data.username) backendErrors.push(data.username);
+            if (data.email) backendErrors.push(data.email);
+            if (data.password) backendErrors.push(data.password);
+            
+            if (backendErrors.length === 0 && data.error) {
+                backendErrors.push(data.error);
+            }
+            
+            throw backendErrors.length > 0 ? backendErrors.join("<br>") : "Error en el registro";
+        }
+
+        if (data.accessToken) {
+            localStorage.setItem("access_token", data.accessToken);
+        }
+        if (data.refreshToken) {
+            localStorage.setItem("refresh_token", data.refreshToken);
+        }
+
+        showMessage("Registro completado correctamente", "Puedes dirigirte al Inicio de sesión", "success", 8000);
+        
+        
+  
+        setTimeout(() => {
+            this.reset();
+            if (window.innerWidth <= 768) {
+                const container = document.getElementById('container');
+                container.classList.remove("active");
+                updateMobileButtons();
+            }
+        }, 8500);
+
+    } catch (error) {
+        showMessage("Error", typeof error === 'string' ? error : "Error en el registro. Por favor intente nuevamente.", "error", 5000);
+    } finally {
+        formSubmitting = false;
+        submitButton.disabled = false;
+        submitButton.textContent = 'Registrarme';
+    }
+});
+
 // State management
 let formSubmitting = false;
 let allTimeouts = [];
@@ -68,6 +187,18 @@ function updateMobileButtons() {
     }
 }
 
+function togglePassword(inputId, eyeIcon) {
+    const input = document.getElementById(inputId);
+    if (input.type === "password") {
+        input.type = "text";
+        eyeIcon.classList.remove("fa-eye");
+        eyeIcon.classList.add("fa-eye-slash");
+    } else {
+        input.type = "password";
+        eyeIcon.classList.remove("fa-eye-slash");
+        eyeIcon.classList.add("fa-eye");
+    }
+}
 
 
 // Google authentication handler
@@ -130,7 +261,7 @@ async function handleCredentialResponse(response) {
 
             sessionStorage.setItem("show_login_success", "true");
             
-            window.location.href = '/mainPageProject/html/index.html';
+            window.location.href = '/FrontNotepads/mainPageProject/html/index.html';
             
         } else {
             console.error('Error authenticating user:', data);
@@ -159,106 +290,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('resize', initializeResponsive);
     
 
-    const signupForm = document.getElementById('signup-form');
     const loginForm = document.getElementById('login-form');
-    
-    // Signup form handler
-    if (signupForm) {
-        signupForm.addEventListener('submit', async (event) => {
-            event.preventDefault();
-            
-
-            if (formSubmitting) {
-                console.warn('Formulario ya enviado, ignorando el nuevo intento');
-                return;
-            }
-            
-            formSubmitting = true;
-            
-            const submitButton = signupForm.querySelector('button[type="submit"]');
-            submitButton.disabled = true;
-            submitButton.textContent = 'Registrando...';
-            
-            
-            const username = document.getElementById('username').value;
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            
-            
-            try {
-                console.log('Sending registration request...');
-                
-                const response = await fetch('http://127.0.0.1:8000/users/signup/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ username, email, password }),
-                });
-                
-                console.log('HTTP status code:', response.status);
-                
-                let data;
-                const contentType = response.headers.get('content-type');
-                
-                try {
-                    if (contentType && contentType.includes("application/json")) {
-                        data = await response.json();
-                    } else {
-                        data = await response.text();
-                    }
-                } catch (parseError) {
-                    console.error('Error processing response:', parseError);
-                    showMessage('Error', 'Error procesando la respuesta del servidor', 'error');
-                    resetButton(submitButton, 'Registrarse');
-                }
-                
-                if (response.ok) {
-                    console.log('Registration successful');
-                    // Save tokens
-                    if (typeof data === 'object' && data !== null) {
-                        if (data.accessToken) {
-                            localStorage.setItem("access_token", data.accessToken);
-                        }
-                        
-                        if (data.refreshToken) {
-                            localStorage.setItem("refresh_token", data.refreshToken);
-                        }
-                    }
-                    
-                    showMessage('Exito', 'Registrado con éxito', 'success');
-
-                    const currentIsMobile = window.innerWidth <= 768;
-
-                    handleSuccessfulSignup();
-
-                    localStorage.setItem('isMobileView', currentIsMobile);
-                    localStorage.setItem('returnFromRegistration', 'true');
-                    
-                    
-                } else {
-                    
-                    let errorMsg;
-                    if (typeof data === 'object' && data !== null) {
-                        errorMsg = data.error || JSON.stringify(data);
-                    } else {
-                        errorMsg = data || 'Error en el registro. Por favor intente de nuevo.';
-                    }
-                    
-                    showMessage('Error', errorMsg, 'error');
-                    resetButton(submitButton, 'Registrarme');
-                }
-                
-            } catch (error) {
-                removeAllMessages();
-                console.error('Error detallado:', error);
-                showMessage('Error', 'No se ha podido conectar con el servidor. Por favor, compruebe su conexión e inténtelo de nuevo.', 'error');
-                resetButton(submitButton, 'Registrarme');
-            } finally {
-                formSubmitting = false;
-            }
-        });
-    } 
     
     // Login form handler
     if (loginForm) {
@@ -303,13 +335,13 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (data.refreshToken) {
                             localStorage.setItem("refresh_token", data.refreshToken);
                         }
-                        showMessage('Exitoso', 'Inicio de sesión exitoso. Serás redirigido pronto', 'success');
+                        showMessage('Inicio de sesión exitoso.', 'Serás redirigido pronto', 'success');
                     } else {
-                        showMessage('Exitoso', data || 'Inicio de sesión exitoso. Serás redirigido pronto', 'success');
+                        showMessage('Inicio de sesión exitoso.', data || 'Serás redirigido pronto', 'success');
                     }
                     
                     setTimeout(() => {
-                        window.location.href = '/mainPageProject/html/index.html';
+                        window.location.href = '/FrontNotepads/mainPageProject/html/index.html';
                     }, 3000);
                     
                 } else {
@@ -388,7 +420,7 @@ function resetButton(button, text) {
 }
 
 
-function showMessage(title, message, type) {
+function showMessage(title, message, type, duration = 5000) {
     removeAllMessages();
 
     const messageId = 'msg-' + Date.now();
@@ -427,12 +459,12 @@ function showMessage(title, message, type) {
     
 
     const titleElement = document.createElement('h4');
-    titleElement.textContent = title;
+    titleElement.innerHTML = title;
     titleElement.style.margin = '0 0 8px 0';
     
 
     const messageElement = document.createElement('p');
-    messageElement.textContent = message;
+    messageElement.innerHTML = message;
     messageElement.style.margin = '0';
     
 
@@ -446,9 +478,7 @@ function showMessage(title, message, type) {
     closeButton.style.color = 'white';
     closeButton.style.fontSize = '16px';
     closeButton.style.cursor = 'pointer';
-    closeButton.onclick = () => {
-        messageContainer.remove();
-    };
+    closeButton.onclick = () => messageContainer.remove();
 
     messageContainer.appendChild(titleElement);
     messageContainer.appendChild(messageElement);
@@ -465,21 +495,21 @@ function showMessage(title, message, type) {
         acknowledgeButton.style.border = 'none';
         acknowledgeButton.style.borderRadius = '3px';
         acknowledgeButton.style.cursor = 'pointer';
-        acknowledgeButton.onclick = () => {
-            messageContainer.remove();
-        };
+        acknowledgeButton.onclick = () => messageContainer.remove();
         messageContainer.appendChild(acknowledgeButton);
     }
     
 
     document.body.appendChild(messageContainer);
     
-    if (type === 'success') {
-        setTimeout(() => {
-            fadeOutMessage(messageContainer);
-        }, 2500);
-    }
 
+    if (type !== 'error' || duration > 0) {
+        setTimeout(() => {
+          if (messageContainer.parentNode) {
+            fadeOutMessage(messageContainer);
+          }  
+        }, duration);    
+    }
 }
 
 

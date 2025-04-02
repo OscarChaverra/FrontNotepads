@@ -92,17 +92,6 @@ label{
     height: 100%;
 }
 
-.container input{
-    background-color: #EBEBD5;
-    border: none;
-    margin: 8px 0;
-    padding: 10px 15px;
-    font-size: 13px;
-    border-radius: 8px;
-    width: 100%;
-    outline: none;
-}
-
 .form-container{
     position: absolute;
     top: 0;
@@ -132,6 +121,46 @@ label{
     opacity: 1;
     z-index: 5;
     animation: move 0.6s;
+}
+
+
+.input-group {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    background-color: #EBEBD5;
+    border-radius: 8px;
+    padding: 10px;
+    margin: 8px 0;
+}
+
+.input-group input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-size: 13px;
+    outline: none;
+    padding: 5px 10px;
+}
+
+
+.input-icon {
+    color: gray;
+    font-size: 14px;
+    margin-right: 8px;
+}
+
+
+.password-toggle {
+    cursor: pointer;
+    color: gray;
+    font-size: 14px;
+    margin-left: 8px;
+}
+
+.password-toggle:hover {
+    color: black;
 }
 
 @keyframes move{
@@ -322,13 +351,10 @@ label{
         padding: 8px 25px;
     }
     
-    .container input {
-        padding: 8px 15px;
-    }
-    
  
     .g_id_signin {
         transform-origin: center;
         transform: scale(0.9);
     }
 }
+

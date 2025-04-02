@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         const noCalendarsMessage = document.createElement('div');
         noCalendarsMessage.className = 'empty-message';
         noCalendarsMessage.innerHTML = `
-            <img src="/mainPageProject/img/calendario_vacio.png" alt="No calendars" width="80">
+            <img src="/FrontNotepads/mainPageProject/img/calendario_vacio.png" alt="No calendars" width="80">
             <p>No tienes calendarios. Crea uno nuevo haciendo clic en el botón +</p>
         `;
         calendarListContainer.appendChild(noCalendarsMessage);
@@ -161,8 +161,8 @@ document.addEventListener('DOMContentLoaded', async function() {
             calendarItem.className = 'calendar-item';
             calendarItem.setAttribute('data-date',calendar.id, calendar.date);
             calendarItem.innerHTML = `
-                <a href="/creacion_calendario/index.html" data-date="${calendar.id}" class="calendar-link">
-                    <img src="/mainPageProject/img/calendario.png" alt="calendar" width="43" height="43" class="img-create img-fluid">
+                <a href="/FrontNotepads/creacion_calendario/index.html" data-date="${calendar.id}" class="calendar-link">
+                    <img src="/FrontNotepads/mainPageProject/img/calendario.png" alt="calendar" width="43" height="43" class="img-create img-fluid">
                 </a>
                 <p class="create">ID: ${calendar.id}</p>
                 <p class="create">Fecha: ${calendar.date}</p>
@@ -175,7 +175,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 event.preventDefault();
                 const selectedDate = this.getAttribute("data-date");
                 saveCalendarDate(selectedDate);
-                window.location.href = "/creacion_calendario/index.html";
+                window.location.href = "/FrontNotepads/creacion_calendario/index.html";
             });
         });
     }
@@ -315,7 +315,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 const noNotificationsMessage = document.createElement('div');
                 noNotificationsMessage.className = 'empty-message';
                 noNotificationsMessage.innerHTML = `
-                    <img src="/mainPageProject/img/empty-notification.png" alt="No notifications" width="80">
+                    <img src="/FrontNotepads/mainPageProject/img/empty-notification.png" alt="No notifications" width="80">
                     <p>No tienes notificaciones pendientes</p>
                 `;
                 notificationsContainer.appendChild(noNotificationsMessage);
@@ -370,7 +370,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                         const noNotificationsMessage = document.createElement('div');
                         noNotificationsMessage.className = 'empty-message';
                         noNotificationsMessage.innerHTML = `
-                            <img src="/mainPageProject/img/empty-notification.png" alt="No notifications" width="80">
+                            <img src="/FrontNotepads/mainPageProject/img/empty-notification.png" alt="No notifications" width="80">
                             <p>No tienes notificaciones pendientes</p>
                         `;
                         notificationsContainer.appendChild(noNotificationsMessage);
@@ -402,7 +402,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 const data = await response.json();
                 const userInformation = `
                     <div class="user-profile">
-                        <img src="/mainPageProject/img/avatar.png" alt="Profile" class="mb-3" width="80">
+                        <img src="/FrontNotepads/mainPageProject/img/avatar.png" alt="Profile" class="mb-3" width="80">
                         <h3>${data.username}</h3>
                         <p><i class="fas fa-envelope"></i> ${data.email}</p>
                     </div>
@@ -599,7 +599,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     const logoutUser = () => {
         localStorage.removeItem("access_token");
         localStorage.removeItem("refresh_token");
-        window.location.href = "/AnimatedLoginPage/html/index.html";  
+        window.location.href = "/FrontNotepads/AnimatedLoginPage/html/index.html";  
     };
     
     // Actualizar token cada 9 minutos (según la duración del token de acceso)
@@ -698,7 +698,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     
                     showToast('Calendario creado exitosamente');
                     
-                    window.location.href = '/creacion_calendario/index.html';
+                    window.location.href = '/FrontNotepads/creacion_calendario/index.html';
                      
                 } else {
                     throw new Error('Error creating calendar: ' + response.statusText);
@@ -738,7 +738,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             showToast('Sesión cerrada con éxito');
             
             setTimeout(function() {
-                window.location.href = '/AnimatedLoginPage/html/index.html';
+                window.location.href = '/FrontNotepads/AnimatedLoginPage/html/index.html';
             }, 1500);
         });
         
