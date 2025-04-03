@@ -444,13 +444,18 @@ document.addEventListener('DOMContentLoaded', async function() {
         initialView: 'dayGridMonth', // Vista inicial: mes
         locale: 'es', // Configura el calendario en español
         
-
-        // Funcionalidades adicionales
-        headerToolbar: {  // Configura las herramientas del encabezado (navegación)
-            left: 'prev,next today',
-            center: 'title',
-            right: 'dayGridMonth,listWeek'
+        buttonText: {
+            today: ' Hoy ',
+            month: 'Mes',
+            list: 'Lista'
         },
+
+        // // Funcionalidades adicionales
+        // headerToolbar: {  // Configura las herramientas del encabezado (navegación)
+        //     left: 'prev,next today',
+        //     center: 'title',
+        //     right: 'dayGridMonth,listWeek'
+        // },
 
         editable: false, // Permite arrastrar y modificar eventos
         droppable: false, // Permite arrastrar eventos desde fuera del calendario
@@ -660,7 +665,7 @@ async function getEnfermedad(id) {
             const div = document.createElement("div");
             div.classList.add("info-container", "d-flex", "align-items-center", "mb-3");
 
-            // Checkbox para seleccionar la plaga o enfermedad
+            // Checkbox para seleccionar la plaga o enfermedadradio.classList.add
             const checkbox = document.createElement("input");
             checkbox.type = "checkbox";
             checkbox.value = item.name;
@@ -668,12 +673,16 @@ async function getEnfermedad(id) {
 
             // Evento para manejar la selección (solo uno permitido)
             checkbox.addEventListener("change", function () {
-                document.querySelectorAll('.form-check-input').forEach(cb => cb.checked = false);
-                this.checked = true; // Solo permitir uno seleccionado
-
-                seleccionados = [{ nombre: this.value, categoria }];
+                if (this.checked) {
+                    document.querySelectorAll('.form-check-input').forEach(cb => cb.checked = false);
+                    this.checked = true; // Solo permitir uno seleccionado
+                    seleccionados = [{ nombre: this.value, categoria }];
+                } else {
+                    seleccionados = []; // Vaciar la selección si se desmarca
+                }
                 console.log("Seleccionado:", seleccionados);
             });
+
 
             // Elementos visuales
             const titulo = document.createElement("p");
@@ -783,10 +792,18 @@ async function getEnfermedad(id) {
             radio.name = "evento";
             radio.value = evento.id;
             radio.classList.add("form-check-input", "me-2");
+            let lastChecked = null;
 
             // Evento para manejar la selección
-            radio.addEventListener("change", function () {
-                eventoSeleccionado = evento; // Almacenar el evento seleccionado
+            radio.addEventListener("click", function () {
+                if (lastChecked === this) {
+                    this.checked = false; // Si el usuario hace clic en el mismo radio, lo desmarca
+                    eventoSeleccionado = null; // Eliminar la selección
+                    lastChecked = null;
+                } else {
+                    lastChecked = this; // Guardar el nuevo radio seleccionado
+                    eventoSeleccionado = evento;
+                }
                 console.log("Evento seleccionado:", eventoSeleccionado);
             });
 
