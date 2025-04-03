@@ -30,91 +30,83 @@ function validatePassword(password) {
     return { isValid: true };
 }
 
-// Evento al enviar el formulario de registro
-// Evento al enviar el formulario de registro (versión mejorada)
-document.getElementById("signup-form").addEventListener("submit", async function(event) {
+const signupForm = document.getElementById('signup-form');
+
+signupForm.addEventListener('submit', async (event) => {
     event.preventDefault();
-    removeAllMessages();
-
-    const username = document.getElementById("username").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value;
-
-    // Validación frontend unificada
-    let errors = [];
     
-    if (!username) errors.push("El nombre de usuario es obligatorio.");
-    if (!email) errors.push("El correo electrónico es obligatorio.");
-    
-    const passwordValidation = validatePassword(password);
-    if (!passwordValidation.isValid) {
-        errors.push(passwordValidation.message);
-    }
+        if (formSubmitting) return;
+        formSubmitting = true;
 
-    if (errors.length > 0) {
-        showMessage("Error", errors.join("<br>"), "error", 8000);
-        return;
-    }
+        const submitButton = signupForm.querySelector('button[type="submit"]');
+        submitButton.disabled = true;
+            submitButton.textContent = 'Registrando...';
 
-    // Si pasa validación frontend, proceder con el envío
-    if (formSubmitting) return;
-    formSubmitting = true;
-    
-    const submitButton = this.querySelector('button[type="submit"]');
-    submitButton.disabled = true;
-    submitButton.textContent = 'Registrando...';
-
-    try {
-        const response = await fetch('http://127.0.0.1:8000/users/signup/', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, email, password })
-        });
-
-        const data = await response.json();
+        const username = document.getElementById("username").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value;
         
-        if (!response.ok) {
-            // Manejo de errores del backend
-            let backendErrors = [];
+        
+        try {
+            let errors = [];
             
-            if (data.username) backendErrors.push(data.username);
-            if (data.email) backendErrors.push(data.email);
-            if (data.password) backendErrors.push(data.password);
-            
-            if (backendErrors.length === 0 && data.error) {
-                backendErrors.push(data.error);
+            if (!username) errors.push("El nombre de usuario es obligatorio.");
+            if (!email) errors.push("El correo electrónico es obligatorio.");
+
+            const passwordValidation = validatePassword(password);
+            if (!passwordValidation.isValid) {
+                errors.push(passwordValidation.message);
             }
-            
-            throw backendErrors.length > 0 ? backendErrors.join("<br>") : "Error en el registro";
-        }
 
-        if (data.accessToken) {
-            localStorage.setItem("access_token", data.accessToken);
-        }
-        if (data.refreshToken) {
-            localStorage.setItem("refresh_token", data.refreshToken);
-        }
-
-        showMessage("Registro completado correctamente", "Puedes dirigirte al Inicio de sesión", "success", 8000);
-        
-        
-  
-        setTimeout(() => {
-            this.reset();
-            if (window.innerWidth <= 768) {
-                const container = document.getElementById('container');
-                container.classList.remove("active");
-                updateMobileButtons();
+            if (errors.length > 0) {
+                showMessage("Error", errors.join("<br>"), "error", 8000);
+                return;
             }
-        }, 8500);
 
-    } catch (error) {
-        showMessage("Error", typeof error === 'string' ? error : "Error en el registro. Por favor intente nuevamente.", "error", 5000);
-    } finally {
-        formSubmitting = false;
-        submitButton.disabled = false;
-        submitButton.textContent = 'Registrarme';
-    }
+            const response = await fetch('http://127.0.0.1:8000/users/signup/', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, email, password }),
+            });
+
+            const data = await response.json();
+            
+            if (!response.ok) {
+                let backendErrors = [];
+                if (data.username) backendErrors.push(data.username);
+                if (data.email) backendErrors.push(data.email);
+                if (data.password) backendErrors.push(data.password);
+                if (backendErrors.length === 0 && data.error) {
+                    backendErrors.push(data.error);
+                }
+                throw backendErrors.length > 0 ? backendErrors.join("<br>") : "Error en el registro";
+            }
+
+            if (response.ok){
+
+                if (data.accessToken) localStorage.setItem("access_token", data.accessToken);
+                if (data.refreshToken) localStorage.setItem("refresh_token", data.refreshToken);
+    
+                showMessage("Registro completado", "Puedes dirigirte al Inicio de sesión", "success", 5000);
+                
+                const currentIsMobile = window.innerWidth <= 768;
+    
+                handleSuccessfulSignup();
+    
+                localStorage.setItem('isMobileView', currentIsMobile);
+                localStorage.setItem('returnFromRegistration', 'true');
+    
+            }
+        } catch (error) {
+            removeAllMessages();
+            console.error('Registration error:', error);
+            showMessage("Error", typeof error === 'string' ? error : "Error en el registro. Por favor intente nuevamente.", "error", 5000);
+            resetButton(submitButton, 'Registrarme');
+        } finally {
+            formSubmitting = false;
+        }
 });
 
 // State management
@@ -159,7 +151,7 @@ function checkStoredViewState() {
 }
 
 function handleSuccessfulSignup() {
-    showMessage("Registro exitoso", "Ahora puedes iniciar sesión", "success");
+    showMessage("Registro completado", "Puedes dirigirte al Inicio de sesión", "success", 5000);
 
     document.getElementById('signup-form').reset();
 
@@ -168,7 +160,7 @@ function handleSuccessfulSignup() {
         const container = document.getElementById('container');
         container.classList.remove("active"); 
         updateMobileButtons(); 
-    }, 3000);
+    }, 4000);
 }
 
 function updateMobileButtons() {

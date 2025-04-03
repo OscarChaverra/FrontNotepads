@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         messageElement.className = 'login-success-message';
         messageElement.innerHTML = `
             <div class="alert alert-success" role="alert">
-                <strong>Success! </strong> Login successful.
+                <strong>Inicio de sesión exitoso!</strong>.
                 <button type="button" class="close-btn" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -462,6 +462,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         if (!data.location || !data.location.lat || !data.location.lng) {
             throw new Error('Coordenadas inválidas recibidas de la API');
         }
+
+        console.log('Precision estimada', data.accuracy, 'metros');
 
         return {
             lat: data.location.lat,
