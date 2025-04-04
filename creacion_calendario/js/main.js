@@ -240,6 +240,10 @@ document.addEventListener('DOMContentLoaded', async function() {
 
 
     /************************************************************************************************/
+    const calendarData = JSON.parse(localStorage.getItem('calendarData'));
+    if (!calendarData || !calendarData.typeRice) {
+        throw new Error("No hay datos de tipo de arroz en el localStorage.");
+    }
 
     const storedData = localStorage.getItem("idCalendar");
     console.log(storedData);
@@ -247,20 +251,16 @@ document.addEventListener('DOMContentLoaded', async function() {
     if (!storedData){
         throw new Error("No calendars in localstorage");
     }
-
+    
     let parsedData;
     console.log(parsedData);
 
     try{
         parsedData = JSON.parse(storedData);
-        console.log(parsedData);
+        console.log('parsed data',parsedData);
     } catch (error){
         console.error('Error:', error)
         throw new Error('Error parsing JSON from localstorage');
-    }
-
-    if (!parsedData || !parsedData.idCalendar) {
-        throw new Error("The JSON almacened is not correctly formated");
     }
     console.log("📤 Sending data to backend:", parsedData);
 
@@ -272,7 +272,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             })
 
             const datos = await response.json()
-            console.log(datos)
+            console.log('prueba de datos events',datos)
             return datos
             
         }catch(error){
@@ -280,6 +280,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     }
 
+    
     //traemos los eventos del calendario del usuario
     async function getactivitys(idtipoArroz) {
         //traemos todas las actividades del tipo de arroz
@@ -289,7 +290,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             })
 
             const  datos = await response.json()
-            console.log('Prueba datos',datos)
+            console.log('Prueba datos activities',datos)
             return datos
         }catch(error){
             console.error("Error: ",error)
@@ -298,10 +299,13 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
 
-    async function createEvents(idTipoArroz) {
+    async function createEvents(idtipoArroz) {
         const eventos = await getEvents();
-        const actividades = await getactivitys(idTipoArroz);
-    
+        const actividades = await getactivitys(idtipoArroz);
+        
+        const calendarData = JSON.parse(localStorage.getItem('calendarData'));
+        const currentTypeRice = calendarData.typeRice;
+
         for (const evento of eventos) {
             if (evento["idActividad"] === null) {
     
@@ -328,23 +332,25 @@ document.addEventListener('DOMContentLoaded', async function() {
                     specialEvent.push(object);
                 }
             } else {
-                const actividad = actividades[evento["idActividad"] - 1];
-                const object = {
-                    "title": actividad.activity_name, 
-                    "start": evento.Fecha,
-                    "description": actividad.activity_description,
-                    "materials" : actividad.materials
-                };
-                events.push(object);
+                const actividad = actividades.find(a => a.id === evento["idActividad"]);
+                if (actividad && actividad.typeRice === currentTypeRice) {
+                    const object = {
+                        "title": actividad.activity_name, 
+                        "start": evento.Fecha,
+                        "description": actividad.activity_description,
+                        "materials" : actividad.materials
+                    };
+                    events.push(object);
+                }
             }
         }
         console.log(events)
         return events; // Retorna el array de eventos creados
     }
-    
-    const idTipoArroz = 1;
-    
-    createEvents(idTipoArroz)
+
+    const idtipoArroz = calendarData.typeRice;
+    console.log('id tipo arroz', idtipoArroz)
+    createEvents(idtipoArroz)
 
 // codigo de obtener ubicacion 
 
@@ -451,13 +457,13 @@ document.addEventListener('DOMContentLoaded', async function() {
         },
 
         // // Funcionalidades adicionales
-        // headerToolbar: {  // Configura las herramientas del encabezado (navegación)
-        //     left: 'prev,next today',
-        //     center: 'title',
-        //     right: 'dayGridMonth,listWeek'
-        // },
+        headerToolbar: {  // Configura las herramientas del encabezado (navegación)
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,listWeek'
+        },
 
-        editable: false, // Permite arrastrar y modificar eventos
+        editable: false, // Permite arrastrar y modificar eventos   
         droppable: false, // Permite arrastrar eventos desde fuera del calendario
         selectable: false, // Permite seleccionar días para agregar nuevos eventos
 
@@ -792,9 +798,11 @@ async function getEnfermedad(id) {
             radio.name = "evento";
             radio.value = evento.id;
             radio.classList.add("form-check-input", "me-2");
+
             let lastChecked = null;
 
-            // Evento para manejar la selección
+            
+            // Evento para manejar la selección y permitir desmarcar
             radio.addEventListener("click", function () {
                 if (lastChecked === this) {
                     this.checked = false; // Si el usuario hace clic en el mismo radio, lo desmarca

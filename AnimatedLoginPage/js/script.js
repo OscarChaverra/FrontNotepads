@@ -1,3 +1,72 @@
+if (sessionStorage.getItem("show_signup_success") === "true") {
+    // Eliminar el flag
+    sessionStorage.removeItem("show_signup_success");
+    
+    // Mostrar mensaje de éxito
+    const messageElement = document.createElement('div');
+    messageElement.className = 'signup-success-message';
+    messageElement.innerHTML = `
+        <div class="alert alert-success" role="alert">
+            <strong>Registro completado exitosamente!</strong>
+            <button type="button" class="close-btn" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    `;
+    
+    // Insertar al principio del body o en un contenedor específico
+    document.body.insertBefore(messageElement, document.body.firstChild);
+    
+    // Agregar CSS para el mensaje
+    const style = document.createElement('style');
+    style.textContent = `
+        .signup-success-message {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            animation: fadeOut 3s forwards;
+            animation-delay: 2s;
+        }
+        .signup-success-message .alert {
+            padding: 15px;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .signup-success-message .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            font-weight: bold;
+            color: #155724;
+            cursor: pointer;
+            padding: 0 5px;
+            margin-left: 10px;
+            line-height: 1;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+            border-radius: 50%;
+            height: 30px;
+            width: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .signup-success-message .close-btn:hover {
+            opacity: 1;
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; visibility: hidden; }
+        }
+    `;
+    document.head.appendChild(style);
+}
+
 function validatePassword(password) {
     const minLength = /.{8,}/;
     const easyPattern = /^(?:\d+|[a-z]+)$/i;
@@ -60,6 +129,7 @@ signupForm.addEventListener('submit', async (event) => {
 
             if (errors.length > 0) {
                 showMessage("Error", errors.join("<br>"), "error", 8000);
+                formSubmitting = false;
                 return;
             }
 
@@ -72,16 +142,18 @@ signupForm.addEventListener('submit', async (event) => {
             });
 
             const data = await response.json();
-            
+
             if (!response.ok) {
                 let backendErrors = [];
                 if (data.username) backendErrors.push(data.username);
                 if (data.email) backendErrors.push(data.email);
                 if (data.password) backendErrors.push(data.password);
+                debugger;
                 if (backendErrors.length === 0 && data.error) {
                     backendErrors.push(data.error);
                 }
                 throw backendErrors.length > 0 ? backendErrors.join("<br>") : "Error en el registro";
+                
             }
 
             if (response.ok){
@@ -89,22 +161,29 @@ signupForm.addEventListener('submit', async (event) => {
                 if (data.accessToken) localStorage.setItem("access_token", data.accessToken);
                 if (data.refreshToken) localStorage.setItem("refresh_token", data.refreshToken);
     
-                showMessage("Registro completado", "Puedes dirigirte al Inicio de sesión", "success", 5000);
                 
+                
+                sessionStorage.setItem("show_signup_success", "true");
+                window.location.href = '/FrontNotepads/AnimatedLoginPage/html/index.html';
+                
+
                 const currentIsMobile = window.innerWidth <= 768;
     
                 handleSuccessfulSignup();
     
                 localStorage.setItem('isMobileView', currentIsMobile);
                 localStorage.setItem('returnFromRegistration', 'true');
-    
+                
+                signupForm.reset();
+
             }
         } catch (error) {
             removeAllMessages();
             console.error('Registration error:', error);
             showMessage("Error", typeof error === 'string' ? error : "Error en el registro. Por favor intente nuevamente.", "error", 5000);
-            resetButton(submitButton, 'Registrarme');
+            
         } finally {
+            resetButton(submitButton, 'Registrarme');
             formSubmitting = false;
         }
 });
@@ -151,12 +230,13 @@ function checkStoredViewState() {
 }
 
 function handleSuccessfulSignup() {
-    showMessage("Registro completado", "Puedes dirigirte al Inicio de sesión", "success", 5000);
+    // showMessage("Registro completado", "Puedes dirigirte al Inicio de sesión", "success", 5000);
 
-    document.getElementById('signup-form').reset();
+    const signupForm = document.getElementById('signup-form');
 
 
     setTimeout(() => {
+        signupForm.reset();
         const container = document.getElementById('container');
         container.classList.remove("active"); 
         updateMobileButtons(); 

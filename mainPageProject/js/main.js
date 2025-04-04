@@ -657,30 +657,20 @@ document.addEventListener('DOMContentLoaded', async function() {
         
         formRaice.addEventListener('change', async function(event) {
             event.preventDefault();
-            
             const typeRice = parseInt(formRaice.value, 10);
             
             if (typeRice === 0) {
                 alert("Por favor selecciona un tipo de arroz.");
                 return;
             }
-
-            const currentDate = new Date();
-            const formattedDate = currentDate.toISOString().split('T')[0];
-
-            const latitude = sessionStorage.getItem('userLatitude');
-            const longitude = sessionStorage.getItem('userLongitude');
-
+            console.log('Tipo de arroz seleccionado:', typeRice);
             const calendarData = {
                 typeRice: typeRice,
-                creationDate: formattedDate,
-                location: {
-                    latitude: latitude ? parseFloat(latitude): null,
-                    longitude: longitude ? parseFloat(longitude): null
-                }
+                creationDate: new Date().toISOString().split('T')[0]
             };
-            console.log(calendarData);
+
             localStorage.setItem('calendarData', JSON.stringify(calendarData));
+            console.log('calendar data actualizado', calendarData);
             
             // Mostrar un loader mientras se procesa
             const loader = document.createElement('div');
@@ -699,9 +689,8 @@ document.addEventListener('DOMContentLoaded', async function() {
                     console.log('Calendar created:', data);
                     
                     showToast('Calendario creado exitosamente');
+
                     
-                    window.location.href = '/FrontNotepads/creacion_calendario/index.html';
-                     
                 } else {
                     throw new Error('Error creating calendar: ' + response.statusText);
                 }
