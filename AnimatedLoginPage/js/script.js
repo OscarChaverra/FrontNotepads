@@ -133,7 +133,7 @@ signupForm.addEventListener('submit', async (event) => {
                 return;
             }
 
-            const response = await fetch('http://127.0.0.1:8000/users/signup/', {
+            const response = await fetch('https://notepadsbackend-production.up.railway.app/users/signup/', {
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/json',
@@ -280,7 +280,7 @@ async function handleCredentialResponse(response) {
         const access_token = response.credential;
 
 
-        const backendResponse = await fetch('http://127.0.0.1:8000/users/google-login/', {
+        const backendResponse = await fetch('https://notepadsbackend-production.up.railway.app/users/google-login/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -378,7 +378,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             
             try {
-                const response = await fetch('http://127.0.0.1:8000/users/login/', {
+                const response = await fetch('https://notepadsbackend-production.up.railway.app/users/login/', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

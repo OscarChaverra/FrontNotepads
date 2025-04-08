@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         calendarListContainer.appendChild(showLoader());
         
         try {
-            const response = await fetchWithAuth('http://127.0.0.1:8000/calendar/calendarList/', {
+            const response = await fetchWithAuth('https://notepadsbackend-production.up.railway.app/calendar/calendarList/', {
                 method: 'GET',
             });
 
@@ -254,7 +254,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     // function to delete calendar
     async function deleteCalendar(idCalendar){
         try {
-            const response = await fetchWithAuth('http://127.0.0.1:8000/calendar/deleteCalendar/',{
+            const response = await fetchWithAuth('https://notepadsbackend-production.up.railway.app/calendar/deleteCalendar/',{
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -294,7 +294,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         notificationsContainer.appendChild(showLoader());
         
         try {
-            const response = await fetchWithAuth('http://127.0.0.1:8000/Noti/Notificaciones/', {
+            const response = await fetchWithAuth('https://notepadsbackend-production.up.railway.app/Noti/Notificaciones/', {
                 method: 'GET',
             });
                 
@@ -392,7 +392,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             e.preventDefault();
             
             try {
-                const response = await fetchWithAuth('http://127.0.0.1:8000/users/my-profile/', {
+                const response = await fetchWithAuth('https://notepadsbackend-production.up.railway.app/users/my-profile/', {
                 });
                 
                 if (!response.ok) {
@@ -576,7 +576,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     
         try {
-            const response = await fetch("http://127.0.0.1:8000/users/token/refresh/", {
+            const response = await fetch("https://notepadsbackend-production.up.railway.app/users/token/refresh/", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ refresh: refreshToken }),
@@ -679,7 +679,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             calendarModal.querySelector('.modal-content').appendChild(loader);
 
             try {
-                const response = await fetchWithAuth(`http://127.0.0.1:8000/event/events/${typeRice}/`, {
+                const response = await fetchWithAuth(`https://notepadsbackend-production.up.railway.app/event/events/${typeRice}/`, {
                     method: 'GET',
                 });
 
@@ -790,7 +790,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         const userNameElement = document.getElementById('user-name');
         
         try {
-            const response = await fetchWithAuth('http://127.0.0.1:8000/users/my-profile/', {
+            const response = await fetchWithAuth('https://notepadsbackend-production.up.railway.app/users/my-profile/', {
             });
             
             if (!response.ok) {

@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     
         try {
-            const response = await fetch("http://127.0.0.1:8000/users/token/refresh/", {
+            const response = await fetch("https://notepadsbackend-production.up.railway.app/users/token/refresh/", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ refresh: refreshToken }),
@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             e.preventDefault();
             
             try {
-                const response = await fetchWithAuth('http://127.0.0.1:8000/users/my-profile/', {
+                const response = await fetchWithAuth('https://notepadsbackend-production.up.railway.app/users/my-profile/', {
                 });
                 
                 if (!response.ok) {
@@ -215,7 +215,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         const userNameElement = document.getElementById('user-name');
         
         try {
-            const response = await fetchWithAuth('http://127.0.0.1:8000/users/my-profile/', {
+            const response = await fetchWithAuth('https://notepadsbackend-production.up.railway.app/users/my-profile/', {
             });
             
             if (!response.ok) {
@@ -266,7 +266,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     async function getEvents(){
         try{
-            const response = await fetchWithAuth("http://127.0.0.1:8000/event/calendarEvents/",{
+            const response = await fetchWithAuth("https://notepadsbackend-production.up.railway.app/event/calendarEvents/",{
                 method: "POST",
                 body: JSON.stringify(parsedData)  
             })
@@ -285,7 +285,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     async function getactivitys(idtipoArroz) {
         //traemos todas las actividades del tipo de arroz
         try{
-            const response = await fetchWithAuth(`http://127.0.0.1:8000/activitys/actividades/${idtipoArroz}`,{
+            const response = await fetchWithAuth(`https://notepadsbackend-production.up.railway.app/activitys/actividades/${idtipoArroz}`,{
                 method: "POST",
             })
 
@@ -535,7 +535,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
 async function getPlaga(id) {
     try{
-        const response = await fetchWithAuth("http://127.0.0.1:8000/plaga/ViewPlaga/",{
+        const response = await fetchWithAuth("https://notepadsbackend-production.up.railway.app/plaga/ViewPlaga/",{
             method: "POST",
             body: JSON.stringify({"Id": id})
             
@@ -550,7 +550,7 @@ async function getPlaga(id) {
 
 async function deleteSpecialEvent(specialEvent, idCalendar) {
     try{
-        const response = await fetchWithAuth("http://127.0.0.1:8000/event/deleteSpecialEvent/",{
+        const response = await fetchWithAuth("https://notepadsbackend-production.up.railway.app/event/deleteSpecialEvent/",{
             method: "POST",
             body: JSON.stringify({"idCalendar": idCalendar, "dateEvent": specialEvent.start})
         })
@@ -565,7 +565,7 @@ async function deleteSpecialEvent(specialEvent, idCalendar) {
 
 async function getEnfermedad(id) {
     try{
-        const response = await fetchWithAuth("http://127.0.0.1:8000/enfermedad/ViewEnfermedad/",{
+        const response = await fetchWithAuth("https://notepadsbackend-production.up.railway.app/enfermedad/ViewEnfermedad/",{
             method: "POST",
             body: JSON.stringify({"Id": id}) 
             
@@ -583,7 +583,7 @@ async function getEnfermedad(id) {
     console.log("DOM cargado correctamente.");
     async function createEspecialEvent(idCalendar, typeProblem, selection) {
         try{
-            const response = await fetchWithAuth("http://127.0.0.1:8000/event/createSpecialEvent/",{
+            const response = await fetchWithAuth("https://notepadsbackend-production.up.railway.app/event/createSpecialEvent/",{
                 method: "POST",
                 body: JSON.stringify({"idCalendar": idCalendar, "typeProblem": typeProblem, "selection" : selection})
                 
