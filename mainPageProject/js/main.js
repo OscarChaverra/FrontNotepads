@@ -175,7 +175,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 event.preventDefault();
                 const selectedDate = this.getAttribute("data-date");
                 saveCalendarDate(selectedDate);
-                window.location.href = "/creacion_calendario/index.html";
+                // window.location.href = "/creacion_calendario/index.html";
             });
         });
     }
