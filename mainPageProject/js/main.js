@@ -175,7 +175,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 event.preventDefault();
                 const selectedDate = this.getAttribute("data-date");
                 saveCalendarDate(selectedDate);
-                window.location.href = "/FrontNotepads/creacion_calendario/index.html";
+                window.location.href = "/creacion_calendario/index.html";
             });
         });
     }
@@ -601,7 +601,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     const logoutUser = () => {
         localStorage.removeItem("access_token");
         localStorage.removeItem("refresh_token");
-        window.location.href = "/FrontNotepads/AnimatedLoginPage/html/index.html";  
+        window.location.href = "/index.html";  
     };
     
     // Actualizar token cada 9 minutos (según la duración del token de acceso)
@@ -729,7 +729,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             showToast('Sesión cerrada con éxito');
             
             setTimeout(function() {
-                window.location.href = '/FrontNotepads/AnimatedLoginPage/html/index.html';
+                window.location.href = '/index.html';
             }, 1500);
         });
         
