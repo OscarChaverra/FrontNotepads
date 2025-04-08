@@ -9,7 +9,7 @@ COPY AnimatedLoginPage/css /usr/share/nginx/html/css
 COPY AnimatedLoginPage/js /usr/share/nginx/html/js
 
 COPY mainPageProject/html /usr/share/nginx/html/mainPageProject/html
-COPY mainPageProject/css /usr/share/nginx/html/mainPageProject/css
+COPY mainPageProject/css /usr/share/nginx/html/css
 COPY mainPageProject/js /usr/share/nginx/html/mainPageProject/js
 COPY mainPageProject/img /usr/share/nginx/html/mainPageProject/img
 
