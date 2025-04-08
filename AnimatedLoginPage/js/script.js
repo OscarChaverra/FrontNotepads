@@ -413,7 +413,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                     
                     setTimeout(() => {
-                        window.location.href = '/mainPageProject/html/index.html';
+                        window.location.href = '/index.html';
                     }, 3000);
                     
                 } else {
