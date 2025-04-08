@@ -164,7 +164,7 @@ signupForm.addEventListener('submit', async (event) => {
                 
                 
                 sessionStorage.setItem("show_signup_success", "true");
-                window.location.href = '/FrontNotepads/AnimatedLoginPage/html/index.html';
+                window.location.href = '/AnimatedLoginPage/html/index.html';
                 
 
                 const currentIsMobile = window.innerWidth <= 768;
@@ -333,7 +333,7 @@ async function handleCredentialResponse(response) {
 
             sessionStorage.setItem("show_login_success", "true");
             
-            window.location.href = '/FrontNotepads/mainPageProject/html/index.html';
+            window.location.href = '/mainPageProject/html/index.html';
             
         } else {
             console.error('Error authenticating user:', data);
@@ -413,7 +413,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                     
                     setTimeout(() => {
-                        window.location.href = '/FrontNotepads/mainPageProject/html/index.html';
+                        window.location.href = '/mainPageProject/html/index.html';
                     }, 3000);
                     
                 } else {
