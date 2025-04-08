@@ -12,7 +12,7 @@ COPY mainPageProject/html /usr/share/nginx/html/mainPageProject
 COPY mainPageProject/css /usr/share/nginx/html/mainPageProject/css
 COPY mainPageProject/js /usr/share/nginx/html/mainPageProject/js
 
-COPY creacion_calendario/html /usr/share/nginx/html/creacion_calendario
+COPY creacion_calendario/ /usr/share/nginx/html/creacion_calendario
 COPY creacion_calendario/styles /usr/share/nginx/html/creacion_calendario/styles
 COPY creacion_calendario/js /usr/share/nginx/html/creacion_calendario/js
 
