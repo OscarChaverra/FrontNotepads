@@ -1,0 +1,330 @@
+document.addEventListener('DOMContentLoaded', async function() {
+    // let calendars; 
+
+    // try {
+    //     const Backresponse = await fetch('http://127.0.0.1:8000/calendar/calendarList/', {
+    //         method: 'GET',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //             "Authorization": `Bearer ${token}` 
+    //         }
+            
+    //     })
+
+    //     .then(Backresponse => Backresponse.json())
+    //     .then(data => {
+    //         calendars = data;
+    //     });
+    // } catch (error) {
+    //     console.error("Error sending data:", error);
+    // }
+
+
+    // for (const calendar of calendars) {
+    //     console.log("hola")
+    //     section = document.getElementById('calendar-list');
+    
+    //     a = document.createElement('a');
+    //     img = document.createElement('img');
+    //     p = document.createElement('p');
+    
+    //     img.src = "/mainPageProject/img/calendario.png"
+    //     img.alt = "calendar";
+    //     img.width = "43";
+    //     img.height = "43";
+    //     img.className = "img-create img-fluid";
+    //     p.innerHTML = calendar.date
+    //     p.className = "create"
+    //     a.appendChild(img);
+    //     a.href = "";
+
+    //     section.appendChild(a);
+    //     section.appendChild(p);
+
+    // }
+
+
+    // try{
+    //     const response = await fetch('http://127.0.0.1:8000/calendar/createCalendar/', {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type' : 'application/json',
+    //         },
+    //         body: JSON.stringify({}),
+    //     });
+    
+    //     if (response.ok){
+    //         //Save the access_token and refresh_token in the local storage:
+    //         const data = await response.json();
+    //         localStorage.setItem("access_token", data.access_token);
+    //         localStorage.setItem("refresh_token", data.refresh_token);
+    //     }
+    // } catch (error){
+    //     console.error('Error:', error);
+    // }
+
+    // Obtener todas las notificaciones del backend
+    const token = localStorage.getItem('access_token');
+
+    if (!token) {
+        console.error('Access token not found.');
+        window.location.href = '/AnimatedLoginPage/html/index.html';
+        return;
+    }
+
+    const showLoader = () => {
+        const loader = document.createElement('div');
+        loader.id = 'content-loader';
+        loader.className = 'loader';
+        loader.innerHTML = `
+            <div class="lds-ripple">
+                <div></div>
+                <div></div>
+            </div>
+        `;
+        return loader;
+    };
+
+    try {
+        const response = await fetch('http://127.0.0.1:8000/Noti/Notificaciones/', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+            
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        const notificationsContainer = document.getElementsByClassName('notification-list')[0];
+                // const currentDate = new Date();
+
+        data.forEach(notification => {
+            // const notificationDate = new Date(notification.fecha);
+            // const timeDifference = notificationDate - currentDate;
+            // const daysDifference = timeDifference / (1000 * 3600 * 24);
+
+            // if (daysDifference >= 0 && daysDifference <= 2) {
+            const notificationElement = document.createElement('div');
+            notificationElement.className = 'notification';
+            notificationElement.innerHTML = `
+                <h3>${notification.Titulo}</h3>
+                <p>${notification.Mensaje}</p>
+                <span class="close">&times;</span>
+            `;
+            notificationsContainer.appendChild(notificationElement);
+        });
+                    
+
+                // Obtener todos los elementos <span> que cierran las notificaciones
+        const closeButtons = document.getElementsByClassName('close');
+
+        // Añadir un evento de clic a cada botón de cierre
+        for (let i = 0; i < closeButtons.length; i++) {
+            closeButtons[i].onclick = function() {
+                const notification = this.parentElement;
+                notification.style.display = 'none';
+                localStorage.setItem(notification.id, 'closed');
+            }
+        }
+        
+    } catch (error) {
+        console.error('Error fetching notifications:', error);
+    }
+    
+    // //Notificaciones recibidas desde el backend
+    // let notificationsFromBackend = [
+    //     { id: 'notif1', message: 'Notificación 1' },
+    //     { id: 'notif2', message: 'Notificación 2' },
+    //     { id: 'notif3', message: 'Notificación 3' }
+    // ];
+
+    // let notificationList = document.querySelector('.notification-list');
+    
+    // // Mostrar todas las notificaciones recibidas desde el backend
+    
+    // notificationsFromBackend.forEach(function(notification) {
+    //     let notificationElement = document.createElement('div');
+    //     notificationElement.className = 'notification';
+    //     notificationElement.id = notification.id;
+    //     notificationElement.innerHTML = `
+    //         <p>${notification.message}</p>
+    //         <span class="close">&times;</span>
+    //     `;
+    //     notificationList.appendChild(notificationElement);
+    // });
+
+    
+
+// Obtain the user name to show it in the main page
+    const userNameElement = document.getElementById('user-name');
+
+    // Fetch username to show it in the main page 
+    function fetchUsername() {
+        const token = localStorage.getItem('access_token');
+
+        if (!token) {
+            console.error('Access token not found.');
+            return;
+        }
+
+        fetch('http://127.0.0.1:8000/users/my-profile/', {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error, status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            userNameElement.textContent = data.username;
+        })
+        .catch(error => console.error('Error fetching username data:', error));
+    }
+
+    fetchUsername();
+
+    // Obtaining the user name and email to show it in the main page
+    const userContainer = document.getElementById('user-container');
+    const userModal = document.getElementById('userModal');
+    const userModalContent = document.getElementById('userModalContent');
+    const closeModalButton = userModal.querySelector('.close');
+
+    //Fetch all user data to show it    
+    userContainer.addEventListener('click', function() {
+        const token = localStorage.getItem('access_token');
+
+        if (!token) {
+            console.error('No token found in local storage');
+            return;
+        }
+
+        fetch('http://127.0.0.1:8000/users/my-profile/', {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            const userInformation = `
+                <div>
+                    <p>Nombre de usuario: ${data.username}</p>
+                    <p>Correo electrónico: ${data.email}</p>
+                </div>
+            `;
+            userModalContent.innerHTML = userInformation;
+            userModal.style.display = 'block';
+        })
+        .catch(error => console.error('Error fetching user data:', error));
+    });
+
+
+    // Create a new calendar
+    const formRaice = document.getElementById('form-select');
+    document.getElementById('loader').classList.toggle("loader2");
+
+    formRaice.addEventListener('change', async function(event) {
+        event.preventDefault();
+        
+        const typeRice = parseInt(formRaice.value, 10);
+
+        const token = localStorage.getItem('access_token');
+
+        if (!token) {
+            console.error('No token found in local storage');
+            return;
+        }
+
+        // loader.classList.toggle("loader2");
+
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/event/events/${typeRice}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Calendar created:', data);
+                window.location.replace('/creacion_calendario/index.html');
+            } else {
+                console.error('Error creating calendar:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        } 
+        // finally {
+        //     loader.classList.toggle("loader2")
+        // }
+    });
+
+    closeModalButton.onclick = function() {
+        userModal.style.display = 'none';
+    }
+
+    // Getting the modal
+    let calendarModal = document.getElementById('calendarModal');
+    
+    // Get the button that opens the modal
+    let createCalendarBtn = document.getElementById('create-calendar');
+    
+    createCalendarBtn.onclick = function() {
+        calendarModal.style.display = 'block';
+    }
+    
+    let closeCalendarModalButton = calendarModal.querySelector('.close');
+    closeCalendarModalButton.onclick = function() {
+        calendarModal.style.display = 'none';
+    }
+    
+    // When the user clicks close the modal
+    window.onclick = function(event) {
+        if (event.target == userModal) {
+            userModal.style.display = 'none';
+        }
+
+        if (event.target == calendarModal) {
+          calendarModal.style.display = 'none';
+        }
+    }
+
+    
+    // Logout
+    const logoutButton = document.getElementById('logout');
+
+    logoutButton.addEventListener('click', function() {
+        localStorage.removeItem('access_token');
+        window.location.href = '/AnimatedLoginPage/html/index.html';
+        alert('Sesión cerrada con éxito');
+    });
+
+    
+});
+
+.container-calendars {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 20px; 
+        margin-bottom: 150px; 
+    }
+
+    #calendars, #notifications {
+        width: 100%;
+        margin-top: 1em;
+    }

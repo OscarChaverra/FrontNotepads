@@ -1,0 +1,41 @@
+<a href="https://www.flaticon.es/iconos-gratis/agregar-archivo" title="agregar archivo iconos">Agregar archivo iconos creados por TravisAvery - Flaticon</a>
+
+<div class="notification" id="notif1">
+                            <p>notification aqui</p>
+                            <span class="close">&times;</span>
+                        </div>
+                        <div class="notification" id="notif2">
+                            <p>notification aqui</p>
+                            <span class="close">&times;</span>
+                        </div>
+                        <div class="notification" id="notif2">
+                            <p>notification aqui</p>
+                            <span class="close">&times;</span>
+                        </div>
+                        <div class="notification" id="notif2">
+                            <p>notification aqui</p>
+                            <span class="close">&times;</span>
+                        </div>
+                        <div class="notification" id="notif2">
+                            <p>notification aqui</p>
+                            <span class="close">&times;</span>
+                        </div>
+                        <div class="notification" id="notif2">
+                            <p>notification aqui</p>
+                            <span class="close">&times;</span>
+                        </div>
+
+                        let notificationList = document.querySelector('.notification-list');
+    // Mostrar notificaciones que no han sido cerradas
+    notificationsFromBackend.forEach(function(notification) {
+        if (!localStorage.getItem(notification.id)) {
+            var notificationElement = document.createElement('div');
+            notificationElement.className = 'notification';
+            notificationElement.id = notification.id;
+            notificationElement.innerHTML = `
+                <p>${notification.message}</p>
+                <span class="close">&times;</span>
+            `;
+            notificationList.appendChild(notificationElement);
+        }
+    });
