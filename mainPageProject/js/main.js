@@ -599,7 +599,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     const logoutUser = () => {
         localStorage.removeItem("access_token");
         localStorage.removeItem("refresh_token");
-        window.location.href = "/AnimatedLoginPage/html/index.html";  
+        // window.location.href = "/AnimatedLoginPage/html/index.html";  
     };
     
     // Actualizar token cada 9 minutos (según la duración del token de acceso)
