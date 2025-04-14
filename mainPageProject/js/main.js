@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         messageElement.className = 'login-success-message';
         messageElement.innerHTML = `
             <div class="alert alert-success" role="alert">
-                <strong>Inicio de sesión exitoso!</strong>.
+                <strong>Success! </strong> Login successful.
                 <button type="button" class="close-btn" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         calendarListContainer.appendChild(showLoader());
         
         try {
-            const response = await fetchWithAuth('https://notepadsbackend-production.up.railway.app/calendar/calendarList/', {
+            const response = await fetchWithAuth('http://127.0.0.1:8000/calendar/calendarList/', {
                 method: 'GET',
             });
 
@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         const noCalendarsMessage = document.createElement('div');
         noCalendarsMessage.className = 'empty-message';
         noCalendarsMessage.innerHTML = `
-            <img src="/FrontNotepads/mainPageProject/img/calendario_vacio.png" alt="No calendars" width="80">
+            <img src="/mainPageProject/img/calendario_vacio.png" alt="No calendars" width="80">
             <p>No tienes calendarios. Crea uno nuevo haciendo clic en el botón +</p>
         `;
         calendarListContainer.appendChild(noCalendarsMessage);
@@ -161,8 +161,8 @@ document.addEventListener('DOMContentLoaded', async function() {
             calendarItem.className = 'calendar-item';
             calendarItem.setAttribute('data-date',calendar.id, calendar.date);
             calendarItem.innerHTML = `
-                <a href="/FrontNotepads/creacion_calendario/index.html" data-date="${calendar.id}" class="calendar-link">
-                    <img src="/FrontNotepads/mainPageProject/img/calendario.png" alt="calendar" width="43" height="43" class="img-create img-fluid">
+                <a href="/creacion_calendario/index.html" data-date="${calendar.id}" class="calendar-link">
+                    <img src="/mainPageProject/img/calendario.png" alt="calendar" width="43" height="43" class="img-create img-fluid">
                 </a>
                 <p class="create">ID: ${calendar.id}</p>
                 <p class="create">Fecha: ${calendar.date}</p>
@@ -254,7 +254,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     // function to delete calendar
     async function deleteCalendar(idCalendar){
         try {
-            const response = await fetchWithAuth('https://notepadsbackend-production.up.railway.app/calendar/deleteCalendar/',{
+            const response = await fetchWithAuth('http://127.0.0.1:8000/calendar/deleteCalendar/',{
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -294,7 +294,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         notificationsContainer.appendChild(showLoader());
         
         try {
-            const response = await fetchWithAuth('https://notepadsbackend-production.up.railway.app/Noti/Notificaciones/', {
+            const response = await fetchWithAuth('http://127.0.0.1:8000/Noti/Notificaciones/', {
                 method: 'GET',
             });
                 
@@ -315,7 +315,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 const noNotificationsMessage = document.createElement('div');
                 noNotificationsMessage.className = 'empty-message';
                 noNotificationsMessage.innerHTML = `
-                    <img src="/FrontNotepads/mainPageProject/img/empty-notification.png" alt="No notifications" width="80">
+                    <img src="/mainPageProject/img/empty-notification.png" alt="No notifications" width="80">
                     <p>No tienes notificaciones pendientes</p>
                 `;
                 notificationsContainer.appendChild(noNotificationsMessage);
@@ -370,7 +370,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                         const noNotificationsMessage = document.createElement('div');
                         noNotificationsMessage.className = 'empty-message';
                         noNotificationsMessage.innerHTML = `
-                            <img src="/FrontNotepads/mainPageProject/img/empty-notification.png" alt="No notifications" width="80">
+                            <img src="/mainPageProject/img/empty-notification.png" alt="No notifications" width="80">
                             <p>No tienes notificaciones pendientes</p>
                         `;
                         notificationsContainer.appendChild(noNotificationsMessage);
@@ -392,7 +392,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             e.preventDefault();
             
             try {
-                const response = await fetchWithAuth('https://notepadsbackend-production.up.railway.app/users/my-profile/', {
+                const response = await fetchWithAuth('http://127.0.0.1:8000/users/my-profile/', {
                 });
                 
                 if (!response.ok) {
@@ -402,7 +402,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 const data = await response.json();
                 const userInformation = `
                     <div class="user-profile">
-                        <img src="/FrontNotepads/mainPageProject/img/avatar.png" alt="Profile" class="mb-3" width="80">
+                        <img src="/mainPageProject/img/avatar.png" alt="Profile" class="mb-3" width="80">
                         <h3>${data.username}</h3>
                         <p><i class="fas fa-envelope"></i> ${data.email}</p>
                     </div>
@@ -462,8 +462,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         if (!data.location || !data.location.lat || !data.location.lng) {
             throw new Error('Coordenadas inválidas recibidas de la API');
         }
-
-        console.log('Precision estimada', data.accuracy, 'metros');
 
         return {
             lat: data.location.lat,
@@ -576,7 +574,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     
         try {
-            const response = await fetch("https://notepadsbackend-production.up.railway.app/users/token/refresh/", {
+            const response = await fetch("http://127.0.0.1:8000/users/token/refresh/", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ refresh: refreshToken }),
@@ -601,7 +599,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     const logoutUser = () => {
         localStorage.removeItem("access_token");
         localStorage.removeItem("refresh_token");
-        window.location.href = "/index.html";  
+        window.location.href = "/AnimatedLoginPage/html/index.html";  
     };
     
     // Actualizar token cada 9 minutos (según la duración del token de acceso)
@@ -657,20 +655,30 @@ document.addEventListener('DOMContentLoaded', async function() {
         
         formRaice.addEventListener('change', async function(event) {
             event.preventDefault();
+            
             const typeRice = parseInt(formRaice.value, 10);
             
             if (typeRice === 0) {
                 alert("Por favor selecciona un tipo de arroz.");
                 return;
             }
-            console.log('Tipo de arroz seleccionado:', typeRice);
+
+            const currentDate = new Date();
+            const formattedDate = currentDate.toISOString().split('T')[0];
+
+            const latitude = sessionStorage.getItem('userLatitude');
+            const longitude = sessionStorage.getItem('userLongitude');
+
             const calendarData = {
                 typeRice: typeRice,
-                creationDate: new Date().toISOString().split('T')[0]
+                creationDate: formattedDate,
+                location: {
+                    latitude: latitude ? parseFloat(latitude): null,
+                    longitude: longitude ? parseFloat(longitude): null
+                }
             };
-
+            console.log(calendarData);
             localStorage.setItem('calendarData', JSON.stringify(calendarData));
-            console.log('calendar data actualizado', calendarData);
             
             // Mostrar un loader mientras se procesa
             const loader = document.createElement('div');
@@ -679,7 +687,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             calendarModal.querySelector('.modal-content').appendChild(loader);
 
             try {
-                const response = await fetchWithAuth(`https://notepadsbackend-production.up.railway.app/event/events/${typeRice}/`, {
+                const response = await fetchWithAuth(`http://127.0.0.1:8000/event/events/${typeRice}/`, {
                     method: 'GET',
                 });
 
@@ -689,8 +697,9 @@ document.addEventListener('DOMContentLoaded', async function() {
                     console.log('Calendar created:', data);
                     
                     showToast('Calendario creado exitosamente');
-
                     
+                    window.location.href = '/creacion_calendario/index.html';
+                     
                 } else {
                     throw new Error('Error creating calendar: ' + response.statusText);
                 }
@@ -729,7 +738,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             showToast('Sesión cerrada con éxito');
             
             setTimeout(function() {
-                window.location.href = '/index.html';
+                window.location.href = '/AnimatedLoginPage/html/index.html';
             }, 1500);
         });
         
@@ -790,7 +799,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         const userNameElement = document.getElementById('user-name');
         
         try {
-            const response = await fetchWithAuth('https://notepadsbackend-production.up.railway.app/users/my-profile/', {
+            const response = await fetchWithAuth('http://127.0.0.1:8000/users/my-profile/', {
             });
             
             if (!response.ok) {
