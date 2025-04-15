@@ -10,20 +10,6 @@
     flex-direction: column;
 }
 
-.form-check-input {
-    width: 20px; /* Aumenta el tamaño */
-    height: 20px;
-    border: 2px solid #000000 !important; /* Color de borde azul */
-    border-radius: 4px; /* Esquinas redondeadas */
-    cursor: pointer;
-}
-
-.form-check-input:checked {
-    background-color: #007bff; /* Color de fondo cuando está seleccionado */
-    border-color: #000000; /* Borde más oscuro */
-}
-
-
 #container {
     display: flex;
     width: 100%;
@@ -349,18 +335,3 @@ footer p {
     color: #007bff;
     transform: scale(1.1);
 }
-estilos 
-.form-check-input {
-    width: 20px; /* Aumenta el tamaño */
-    height: 20px;
-    border: 2px solid #000000 !important; /* Color de borde azul */
-    border-radius: 4px; /* Esquinas redondeadas */
-    cursor: pointer;
-}
-
-.form-check-input:checked {
-    background-color: #007bff; /* Color de fondo cuando está seleccionado */
-    border-color: #000000; /* Borde más oscuro */
-}
-
-

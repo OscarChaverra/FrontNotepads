@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     const logoutUser = () => {
         localStorage.removeItem("access_token");
         localStorage.removeItem("refresh_token");
-        window.location.href = "/index.html";  
+        window.location.href = "/AnimatedLoginPage/html/index.html";  
     };
     
     // Actualizar token cada 9 minutos (según la duración del token de acceso)
@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 const data = await response.json();
                 const userInformation = `
                     <div class="user-profile">
-                        <img src="/FrontNotepads/mainPageProject/img/avatar.png" alt="Profile" class="mb-3" width="80">
+                        <img src="/mainPageProject/img/avatar.png" alt="Profile" class="mb-3" width="80">
                         <h3>${data.username}</h3>
                         <p><i class="fas fa-envelope"></i> ${data.email}</p>
                     </div>
@@ -154,7 +154,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             showToast('Sesión cerrada con éxito');
             
             setTimeout(function() {
-                window.location.href = '/index.html';
+                window.location.href = '/AnimatedLoginPage/html/index.html';
             }, 1500);
         });
         
@@ -240,10 +240,6 @@ document.addEventListener('DOMContentLoaded', async function() {
 
 
     /************************************************************************************************/
-    const calendarData = JSON.parse(localStorage.getItem('calendarData'));
-    if (!calendarData || !calendarData.typeRice) {
-        throw new Error("No hay datos de tipo de arroz en el localStorage.");
-    }
 
     const storedData = localStorage.getItem("idCalendar");
     console.log(storedData);
@@ -251,16 +247,20 @@ document.addEventListener('DOMContentLoaded', async function() {
     if (!storedData){
         throw new Error("No calendars in localstorage");
     }
-    
+
     let parsedData;
     console.log(parsedData);
 
     try{
         parsedData = JSON.parse(storedData);
-        console.log('parsed data',parsedData);
+        console.log(parsedData);
     } catch (error){
         console.error('Error:', error)
         throw new Error('Error parsing JSON from localstorage');
+    }
+
+    if (!parsedData || !parsedData.idCalendar) {
+        throw new Error("The JSON almacened is not correctly formated");
     }
     console.log("📤 Sending data to backend:", parsedData);
 
@@ -272,7 +272,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             })
 
             const datos = await response.json()
-            console.log('prueba de datos events',datos)
+            console.log(datos)
             return datos
             
         }catch(error){
@@ -280,7 +280,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     }
 
-    
     //traemos los eventos del calendario del usuario
     async function getactivitys(idtipoArroz) {
         //traemos todas las actividades del tipo de arroz
@@ -290,7 +289,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             })
 
             const  datos = await response.json()
-            console.log('Prueba datos activities',datos)
+            console.log('Prueba datos',datos)
             return datos
         }catch(error){
             console.error("Error: ",error)
@@ -299,13 +298,10 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
 
-    async function createEvents(idtipoArroz) {
+    async function createEvents(idTipoArroz) {
         const eventos = await getEvents();
-        const actividades = await getactivitys(idtipoArroz);
-        
-        const calendarData = JSON.parse(localStorage.getItem('calendarData'));
-        const currentTypeRice = calendarData.typeRice;
-
+        const actividades = await getactivitys(idTipoArroz);
+    
         for (const evento of eventos) {
             if (evento["idActividad"] === null) {
     
@@ -332,25 +328,23 @@ document.addEventListener('DOMContentLoaded', async function() {
                     specialEvent.push(object);
                 }
             } else {
-                const actividad = actividades.find(a => a.id === evento["idActividad"]);
-                if (actividad && actividad.typeRice === currentTypeRice) {
-                    const object = {
-                        "title": actividad.activity_name, 
-                        "start": evento.Fecha,
-                        "description": actividad.activity_description,
-                        "materials" : actividad.materials
-                    };
-                    events.push(object);
-                }
+                const actividad = actividades[evento["idActividad"] - 1];
+                const object = {
+                    "title": actividad.activity_name, 
+                    "start": evento.Fecha,
+                    "description": actividad.activity_description,
+                    "materials" : actividad.materials
+                };
+                events.push(object);
             }
         }
         console.log(events)
         return events; // Retorna el array de eventos creados
     }
-
-    const idtipoArroz = calendarData.typeRice;
-    console.log('id tipo arroz', idtipoArroz)
-    createEvents(idtipoArroz)
+    
+    const idTipoArroz = 1;
+    
+    createEvents(idTipoArroz)
 
 // codigo de obtener ubicacion 
 
@@ -450,20 +444,15 @@ document.addEventListener('DOMContentLoaded', async function() {
         initialView: 'dayGridMonth', // Vista inicial: mes
         locale: 'es', // Configura el calendario en español
         
-        buttonText: {
-            today: ' Hoy ',
-            month: 'Mes',
-            list: 'Lista'
-        },
 
-        // // Funcionalidades adicionales
+        // Funcionalidades adicionales
         headerToolbar: {  // Configura las herramientas del encabezado (navegación)
             left: 'prev,next today',
             center: 'title',
             right: 'dayGridMonth,listWeek'
         },
 
-        editable: false, // Permite arrastrar y modificar eventos   
+        editable: false, // Permite arrastrar y modificar eventos
         droppable: false, // Permite arrastrar eventos desde fuera del calendario
         selectable: false, // Permite seleccionar días para agregar nuevos eventos
 
@@ -671,7 +660,7 @@ async function getEnfermedad(id) {
             const div = document.createElement("div");
             div.classList.add("info-container", "d-flex", "align-items-center", "mb-3");
 
-            // Checkbox para seleccionar la plaga o enfermedadradio.classList.add
+            // Checkbox para seleccionar la plaga o enfermedad
             const checkbox = document.createElement("input");
             checkbox.type = "checkbox";
             checkbox.value = item.name;
@@ -679,16 +668,12 @@ async function getEnfermedad(id) {
 
             // Evento para manejar la selección (solo uno permitido)
             checkbox.addEventListener("change", function () {
-                if (this.checked) {
-                    document.querySelectorAll('.form-check-input').forEach(cb => cb.checked = false);
-                    this.checked = true; // Solo permitir uno seleccionado
-                    seleccionados = [{ nombre: this.value, categoria }];
-                } else {
-                    seleccionados = []; // Vaciar la selección si se desmarca
-                }
+                document.querySelectorAll('.form-check-input').forEach(cb => cb.checked = false);
+                this.checked = true; // Solo permitir uno seleccionado
+
+                seleccionados = [{ nombre: this.value, categoria }];
                 console.log("Seleccionado:", seleccionados);
             });
-
 
             // Elementos visuales
             const titulo = document.createElement("p");
@@ -799,19 +784,9 @@ async function getEnfermedad(id) {
             radio.value = evento.id;
             radio.classList.add("form-check-input", "me-2");
 
-            let lastChecked = null;
-
-            
-            // Evento para manejar la selección y permitir desmarcar
-            radio.addEventListener("click", function () {
-                if (lastChecked === this) {
-                    this.checked = false; // Si el usuario hace clic en el mismo radio, lo desmarca
-                    eventoSeleccionado = null; // Eliminar la selección
-                    lastChecked = null;
-                } else {
-                    lastChecked = this; // Guardar el nuevo radio seleccionado
-                    eventoSeleccionado = evento;
-                }
+            // Evento para manejar la selección
+            radio.addEventListener("change", function () {
+                eventoSeleccionado = evento; // Almacenar el evento seleccionado
                 console.log("Evento seleccionado:", eventoSeleccionado);
             });
 
