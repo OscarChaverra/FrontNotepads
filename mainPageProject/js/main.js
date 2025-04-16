@@ -733,7 +733,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             showToast('Sesión cerrada con éxito');
             
             setTimeout(function() {
-                window.location.href = '/html/index.html';
+                window.location.href = '/index.html';
             }, 1500);
         });
         
