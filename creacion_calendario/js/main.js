@@ -338,13 +338,13 @@ document.addEventListener('DOMContentLoaded', async function() {
                 events.push(object);
             }
         }
-        console.log(events)
+        console.log("eventos finales",events)
         return events; // Retorna el array de eventos creados
     }
     
     const idTipoArroz = 1;
     
-    createEvents(idTipoArroz)
+    await createEvents(idTipoArroz)
 
 // codigo de obtener ubicacion 
 
@@ -369,6 +369,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
         const data = await response.json();
         displayWeather(data);
+        document.getElementById("loader").classList.toggle("loader2")
     } catch (error) {
         console.error(error)
     }

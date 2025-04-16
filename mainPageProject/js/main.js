@@ -78,17 +78,12 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     // Mostrar un spinner o loader mientras se cargan los datos
     const showLoader = () => {
-        const loader = document.createElement('div');
-        loader.id = 'content-loader';
-        loader.className = 'loader';
-        loader.innerHTML = `
-            <div class="lds-ripple">
-                <div></div>
-                <div></div>
-            </div>
-        `;
-        return loader;
+        document.getElementById("loader2").classList.toggle("loader")
     };
+
+    const hideLoader = () => {
+        document.getElementById("loader2").classList.toggle("loader2")
+    }
 
 
     if (deleteCalendarBtn) {
@@ -101,7 +96,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     // Cargar los calendarios
     async function loadCalendars() {
         calendarListContainer.innerHTML = '';
-        calendarListContainer.appendChild(showLoader());
+        showLoader();
         
         try {
             const response = await fetchWithAuth('https://notepadsbackend-production.up.railway.app/calendar/calendarList/', {
@@ -115,7 +110,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             const calendars = await response.json();
     
 
-            calendarListContainer.innerHTML = ''; 
+            hideLoader();
             
             if (calendars.length === 0) {
                 // Mostrar mensaje cuando no hay calendarios
@@ -291,7 +286,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     // Cargar las notificaciones
     async function loadNotifications() {
-        notificationsContainer.appendChild(showLoader());
+        showLoader();
         
         try {
             const response = await fetchWithAuth('https://notepadsbackend-production.up.railway.app/Noti/Notificaciones/', {
@@ -303,7 +298,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             }
             
             const notifications = await response.json();
-            notificationsContainer.innerHTML = ''; 
+            hideLoader();
 
             const closedNotifications = JSON.parse(localStorage.getItem('closedNotifications')) || [];
             
@@ -698,7 +693,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     
                     showToast('Calendario creado exitosamente');
                     
-                    window.location.href = '/creacion_calendario/index.html';
+                    location.reload();
                      
                 } else {
                     throw new Error('Error creating calendar: ' + response.statusText);

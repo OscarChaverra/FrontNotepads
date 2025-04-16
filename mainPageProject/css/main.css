@@ -537,7 +537,7 @@ a {
     display: flex;
     justify-content: center;  
     align-items: center;      
-    z-index: 1000;            
+    z-index: 10000;            
     clip-path: circle(150% at 50% 0);
     transition: clip-path 0.8s ease-in-out;
 }
