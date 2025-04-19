@@ -1,3 +1,5 @@
+
+
 .main {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -9,6 +11,15 @@
     align-items: center;
     flex-direction: column;
 }
+
+
+.row {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
 
 #container {
     display: flex;
@@ -34,7 +45,7 @@
 }
 
 #calendar {
-    width: 55%;
+    width: 90%;
     height: 70vh;
     background-color: #ffffff;
     padding: 20px; 
@@ -51,25 +62,40 @@
     background-color: #6c7a89;
     color: white;
     margin: 10px 0;
-    text-align: center;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
+.button-container {
+    display: flex;
+    flex-direction: row; /* antes decía column */
+    margin-top: 150px;
+    margin-left: 150px;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+
 button {
-    padding: 15px 15px;
+    padding: 10px 15px;
     border: none;
     border-radius: 5px;
     background-color: #626f7e;
     color: white;
     cursor: pointer;
     font-size: 16px;
-    margin: 5px 0;
-    width: 50%;
-    display: flex;
+    min-width: 80px;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
 }
+
+.fc-button {
+    width: auto !important;
+}
+
+
 
 .fc-daygrid-day-frame img {
     width: 30px;
@@ -80,6 +106,7 @@ button {
     display: none;
 }
 
+
 .fc-event,.fc-event-title {
     background-color: #EBEBD5 !important;
     color: rgb(66, 60, 60) !important;
@@ -89,10 +116,11 @@ button {
 }
 
 .fc-toolbar-chunk:first-child {
-    display: flex;
+    display: block;
     gap: 5px;
     align-items: center;    
 }
+
 .fc-button-group {
     display: flex;
     gap: 10px;
@@ -104,10 +132,11 @@ button {
     align-items: center;
     justify-content: center;
     height: 100%;
-    padding: 8px 15px;
+    /* padding: 8px 15px; */
     text-align: center;
     line-height: normal;
 }
+
 
 .navbar {
     background-color: #EBEBD5 !important;
@@ -116,10 +145,108 @@ button {
     padding: 0px 0;
 }
 
-.fc-daygrid-day-number {
+.fc-col-header-cell-cushion {
     color: black !important;
     font-size: 15px;
 }
+
+.fc-daygrid-day-number {
+    color: black !important;
+    font-size: 15px;
+} 
+
+.fc-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.fc-toolbar-chunk {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+}
+
+@media (max-width: 480px) {
+    /* Centra el toolbar completo */
+    .fc-toolbar {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    /* Cada grupo (chunk) de botones */
+    .fc-toolbar-chunk {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    /* Orden específico de los elementos */
+    .fc-toolbar-chunk:nth-child(1) {  /* Botones de navegación: < > today */
+        order: 2;
+    }
+
+    .fc-toolbar-chunk:nth-child(2) {  /* Título del mes */
+        order: 1;
+    }
+
+    .fc-toolbar-chunk:nth-child(3) {  /* Botones de vista: month list */
+        order: 0;
+    }
+
+   
+}
+
+@media (max-width: 1024px) {
+    #container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+
+    #buttons {
+        width: 100%;
+        padding: 10px;
+    }
+
+    .button-container {
+        flex-direction: row !important;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-top: 0;
+        margin-left: 0;
+        gap: 10px;
+    }
+
+    .button-container button {
+        width: auto;
+        min-width: 130px;
+    }
+
+    #calendar {
+        width: 100%;
+        padding: 10px;
+    }
+
+    #Footer {
+        margin-top: 30px;
+        position: relative;
+    }
+}
+
 
 .user {
     display: flex;
@@ -305,10 +432,6 @@ footer img {
 footer p {
     font-size: 12px;
     margin: 5px 0;
-}
-.fc-col-header-cell-cushion {
-    color: black !important;
-    font-size: 15px;
 }
 
 .button-container button:hover {
