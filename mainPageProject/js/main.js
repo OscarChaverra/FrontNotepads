@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', async function() {
 
+    let calendars = []
     if (sessionStorage.getItem("show_login_success") === "true") {
         // Eliminar el flag
         sessionStorage.removeItem("show_login_success");
@@ -107,7 +108,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             
-            const calendars = await response.json();
+            calendars = await response.json();
     
 
             hideLoader();
@@ -152,14 +153,16 @@ document.addEventListener('DOMContentLoaded', async function() {
     //Funtion to show calendars
     function renderCalendars(calendars) {
         calendars.forEach(calendar => {
+            let rice;
+            if (calendar.idTypeRice == 1 ? rice = "Grano largo": rice = "Grano corto");
             const calendarItem = document.createElement('div');
             calendarItem.className = 'calendar-item';
             calendarItem.setAttribute('data-date',calendar.id, calendar.date);
             calendarItem.innerHTML = `
-                <a href="/creacion_calendario/index.html" data-date="${calendar.id}" class="calendar-link">
+                <a href="/creacion_calendario/index.html" data-date="${calendar.id}" data-calendar="${calendar.idTypeRice}" class="calendar-link">
                     <img src="/mainPageProject/img/calendario.png" alt="calendar" width="43" height="43" class="img-create img-fluid">
                 </a>
-                <p class="create">ID: ${calendar.id}</p>
+                <p class="create"> ${rice}</p>
                 <p class="create">Fecha: ${calendar.date}</p>
             `;
             calendarListContainer.appendChild(calendarItem);
@@ -169,6 +172,10 @@ document.addEventListener('DOMContentLoaded', async function() {
             link.addEventListener("click", function (event) {
                 event.preventDefault();
                 const selectedDate = this.getAttribute("data-date");
+                const idTyperice = this.getAttribute("data-calendar")
+                let calendarData = JSON.parse(localStorage.getItem("calendarData"))
+                calendarData["typeRice"] = idTyperice
+                localStorage.setItem("calendarData",JSON.stringify(calendarData))
                 saveCalendarDate(selectedDate);
                 window.location.href = "/creacion_calendario/index.html";
             });
@@ -469,7 +476,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         try {
             const coords = await getGoogleGeolocation();
             const locationData = await getReverseGeocoding(coords.lat, coords.lng);
-
+            const ubication = {"lat": coords.lat, "lon": coords.lng}
+            localStorage.setItem("coords",JSON.stringify(ubication))
             if (!locationData || !locationData.address_components) {
                 throw new Error('No se encontraron datos detallados de ubicación.');
             }
@@ -663,7 +671,6 @@ document.addEventListener('DOMContentLoaded', async function() {
 
             const latitude = sessionStorage.getItem('userLatitude');
             const longitude = sessionStorage.getItem('userLongitude');
-
             const calendarData = {
                 typeRice: typeRice,
                 creationDate: formattedDate,

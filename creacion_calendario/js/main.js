@@ -328,7 +328,9 @@ document.addEventListener('DOMContentLoaded', async function() {
                     specialEvent.push(object);
                 }
             } else {
-                const actividad = actividades[evento["idActividad"] - 1];
+                let actividad;
+                if (idTipoArroz == 1 ?  actividad = actividades[evento["idActividad"] - 1]: actividad = actividades[evento["idActividad"]-30]);
+                console.log("esto es una actividad",actividad)
                 const object = {
                     "title": actividad.activity_name, 
                     "start": evento.Fecha,
@@ -342,7 +344,9 @@ document.addEventListener('DOMContentLoaded', async function() {
         return events; // Retorna el array de eventos creados
     }
     
-    const idTipoArroz = 1;
+    const arroz = JSON.parse(localStorage.getItem("calendarData"))
+    const idTipoArroz = arroz.typeRice;
+    console.log("tipo de arroz",idTipoArroz)
     
     await createEvents(idTipoArroz)
 
@@ -356,9 +360,10 @@ document.addEventListener('DOMContentLoaded', async function() {
     let climas = []
     const apiKey = 'ac64c7c3e6bc817231dec6f1932dcee4';  // Reemplázala con tu clave de OpenWeatherMap
 
-
-    const lat = 40.7127837
-    const lon = -74.0059413
+    const ubication = JSON.parse(localStorage.getItem("coords"))
+    console.log(ubication)
+    const lat = ubication.lat
+    const lon = ubication.lon
 
     const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}&lang=es`;
     //se llama a la api del clima y se obtienen los pronosticos
@@ -427,7 +432,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             //ciclo para recorrrer cada unos de los eventos que se crearon anteriormente, no los de a api.
             events.forEach(element => {
                 //condicion para decidir si ese dia llovera duro y si es asi se hacen los cambios
-                if (clima.date === element.start && clima.Clima == "lluvia ligera"){
+                if (clima.date === element.start && clima.Clima == "lluvia moderada"){
                     eventdate = new Date(element.start);
                     eventdate.setDate(eventdate.getDate() + 1);
                 
@@ -630,7 +635,8 @@ async function getEnfermedad(id) {
         plaga = plaga.map(object => {
             return {
                 name : object.name_plague,
-                description : object.description_plague
+                description : object.description_plague,
+                img: object.img
             }
         })
 
@@ -638,7 +644,8 @@ async function getEnfermedad(id) {
         enfermedad = enfermedad.map(object => {
             return {
                 name : object.name_disease,
-                description : object.description_disease
+                description : object.description_disease,
+                img: object.img
             }
         })
 
@@ -656,7 +663,7 @@ async function getEnfermedad(id) {
 
         data[tipo].forEach(item => {
             const categoria = tipo === "plaga" ? "Plaga" : "Enfermedad"; // Definir categoría correctamente
-
+            console.log(item)
             // Contenedor principal
             const div = document.createElement("div");
             div.classList.add("info-container", "d-flex", "align-items-center", "mb-3");
@@ -693,7 +700,7 @@ async function getEnfermedad(id) {
             // Imagen
             const img = document.createElement("img");
             img.classList.add("img-thumbnail");
-            img.src = "https://img.freepik.com/vector-premium/simbolo-control-plagas-vectoriales_1012247-780.jpg";
+            img.src = item.img;
             img.style.width = "150px";
             img.style.height = "150px";
             img.style.objectFit = "cover";
