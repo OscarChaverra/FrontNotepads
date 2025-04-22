@@ -288,7 +288,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
         const calendarData = { idCalendar: date };
         localStorage.setItem("idCalendar", JSON.stringify(calendarData));
-        console.log("✅ Calendar date saved in localStorage:", calendarData);
     }
 
     // Cargar las notificaciones
@@ -679,7 +678,6 @@ document.addEventListener('DOMContentLoaded', async function() {
                     longitude: longitude ? parseFloat(longitude): null
                 }
             };
-            console.log(calendarData);
             localStorage.setItem('calendarData', JSON.stringify(calendarData));
             
             // Mostrar un loader mientras se procesa

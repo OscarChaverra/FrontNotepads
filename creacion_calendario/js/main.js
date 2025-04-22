@@ -242,18 +242,16 @@ document.addEventListener('DOMContentLoaded', async function() {
     /************************************************************************************************/
 
     const storedData = localStorage.getItem("idCalendar");
-    console.log(storedData);
+
 
     if (!storedData){
         throw new Error("No calendars in localstorage");
     }
 
     let parsedData;
-    console.log(parsedData);
 
     try{
         parsedData = JSON.parse(storedData);
-        console.log(parsedData);
     } catch (error){
         console.error('Error:', error)
         throw new Error('Error parsing JSON from localstorage');
@@ -262,7 +260,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     if (!parsedData || !parsedData.idCalendar) {
         throw new Error("The JSON almacened is not correctly formated");
     }
-    console.log("📤 Sending data to backend:", parsedData);
 
     async function getEvents(){
         try{
@@ -272,7 +269,6 @@ document.addEventListener('DOMContentLoaded', async function() {
             })
 
             const datos = await response.json()
-            console.log(datos)
             return datos
             
         }catch(error){
@@ -289,7 +285,6 @@ document.addEventListener('DOMContentLoaded', async function() {
             })
 
             const  datos = await response.json()
-            console.log('Prueba datos',datos)
             return datos
         }catch(error){
             console.error("Error: ",error)
@@ -330,7 +325,6 @@ document.addEventListener('DOMContentLoaded', async function() {
             } else {
                 let actividad;
                 if (idTipoArroz == 1 ?  actividad = actividades[evento["idActividad"] - 1]: actividad = actividades[evento["idActividad"]-30]);
-                console.log("esto es una actividad",actividad)
                 const object = {
                     "title": actividad.activity_name, 
                     "start": evento.Fecha,
@@ -340,13 +334,11 @@ document.addEventListener('DOMContentLoaded', async function() {
                 events.push(object);
             }
         }
-        console.log("eventos finales",events)
         return events; // Retorna el array de eventos creados
     }
     
     const arroz = JSON.parse(localStorage.getItem("calendarData"))
     const idTipoArroz = arroz.typeRice;
-    console.log("tipo de arroz",idTipoArroz)
     
     await createEvents(idTipoArroz)
 
@@ -361,7 +353,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     const apiKey = 'ac64c7c3e6bc817231dec6f1932dcee4';  // Reemplázala con tu clave de OpenWeatherMap
 
     const ubication = JSON.parse(localStorage.getItem("coords"))
-    console.log(ubication)
     const lat = ubication.lat
     const lon = ubication.lon
 
@@ -608,7 +599,6 @@ async function getEnfermedad(id) {
 
     // Evento para abrir el modal de "Nuevo Evento"
     newEventButton.addEventListener("click", function () {
-        console.log("Botón 'Nuevo Evento' clickeado");
         modo = "guardar"; // Configuramos el modo en "guardar"
         eventModal.show(); // Mostrar el modal de nuevo evento
     });
@@ -616,12 +606,10 @@ async function getEnfermedad(id) {
     
     // Eventos para abrir la información de Plagas y Enfermedades
     document.getElementById("plagas-container").addEventListener("click", function () {
-        console.log("Plagas clickeadas");
         mostrarInformacion("plaga"); // Mostrar información de plagas
     });
 
     document.getElementById("enfermedades-container").addEventListener("click", function () {
-        console.log("Enfermedades clickeadas");
         mostrarInformacion("enfermedad"); // Mostrar información de enfermedades
     });
 
@@ -649,10 +637,7 @@ async function getEnfermedad(id) {
             }
         })
 
-        
 
-        console.log(plaga)
-        console.log(enfermedad)
 
         infoList.innerHTML = ""; // Limpiar el contenido previo
 
@@ -663,7 +648,6 @@ async function getEnfermedad(id) {
 
         data[tipo].forEach(item => {
             const categoria = tipo === "plaga" ? "Plaga" : "Enfermedad"; // Definir categoría correctamente
-            console.log(item)
             // Contenedor principal
             const div = document.createElement("div");
             div.classList.add("info-container", "d-flex", "align-items-center", "mb-3");
@@ -680,7 +664,6 @@ async function getEnfermedad(id) {
                 this.checked = true; // Solo permitir uno seleccionado
 
                 seleccionados = [{ nombre: this.value, categoria }];
-                console.log("Seleccionado:", seleccionados);
             });
 
             // Elementos visuales
@@ -770,7 +753,7 @@ async function getEnfermedad(id) {
 
     // Evento para abrir el modal de "Eliminar Evento"
     deleteEventButton.addEventListener("click", function () {
-        console.log("Botón 'Eliminar Evento' clickeado");
+       
         cargarEventos(); // Cargar la lista de eventos
         deleteModal.show(); // Mostrar el modal de eliminar evento
     });
@@ -795,7 +778,7 @@ async function getEnfermedad(id) {
             // Evento para manejar la selección
             radio.addEventListener("change", function () {
                 eventoSeleccionado = evento; // Almacenar el evento seleccionado
-                console.log("Evento seleccionado:", eventoSeleccionado);
+                
             });
 
             // Información del evento
