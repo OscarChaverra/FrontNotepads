@@ -171,13 +171,22 @@ document.addEventListener('DOMContentLoaded', async function() {
         document.querySelectorAll(".calendar-link").forEach(link => {
             link.addEventListener("click", function (event) {
                 event.preventDefault();
+                if (localStorage.getItem("coords") === null){
+                    setupUbicationModal()
+                    return; //esto es para detener la ejecicion si las cordenadas no estan en el localStorage
+                }
+
                 const selectedDate = this.getAttribute("data-date");
                 const idTyperice = this.getAttribute("data-calendar")
                 let calendarData = JSON.parse(localStorage.getItem("calendarData"))
-                calendarData["typeRice"] = idTyperice
+                if (calendarData === null){
+                    calendarData = {}
+                }
+                calendarData["typeRice"]= idTyperice
                 localStorage.setItem("calendarData",JSON.stringify(calendarData))
                 saveCalendarDate(selectedDate);
                 window.location.href = "/creacion_calendario/index.html";
+
             });
         });
     }
@@ -433,6 +442,30 @@ document.addEventListener('DOMContentLoaded', async function() {
             }
         };
     }
+
+
+    //funcion para mostar modal de alerta de ubicacion
+    function setupUbicationModal(){
+        const ubicationModal = document.getElementById("ubicationModal")
+        const ubicationModalContent = document.getElementById("ubicationModalContent")
+        const closeModalButton = ubicationModal.querySelector(".close")
+
+
+        const alertInformation = `
+            <div class="user-profile">
+                <h3  class="titulo" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">Permiso de ubicacion 📍</h3><br>
+                <p style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Para el desarrollo del aplicativo y acceder a todas las funciones  que Ofrece, se necesita conocer su ubicacion.</p><br>     
+                <p style="color: red;"><i class="fas fa-exclamation-circle" style="color:red; font-size:20px;"></i>Esta informacion no se compartira con nadie</p>
+            </div>
+        `;
+
+        ubicationModalContent.innerHTML = alertInformation
+        ubicationModal.style.display = "block"
+
+        closeModalButton.onclick = function() {
+            ubicationModal.style.display = 'none';
+        };
+    };
 
     document.getElementById('location-btn').addEventListener('click', async () => {
         const locationContainer = document.getElementById('location-container');

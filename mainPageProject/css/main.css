@@ -30,6 +30,7 @@ main {
     padding-bottom: 3em;
     flex: 1;
 }
+  
 
 #calendar-list {
     display: grid;
@@ -634,7 +635,7 @@ a {
     overflow: auto;
     background-color: rgb(0,0,0);
     background-color: rgba(0,0,0,0.4);
-    padding-top: 60px;
+    padding-top: 100px;
 }
 
 .modal-content {
