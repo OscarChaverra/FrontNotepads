@@ -349,10 +349,13 @@ document.addEventListener('DOMContentLoaded', async function() {
         } catch (error) {
             console.error('Error fetching notifications:', error);
             notificationsContainer.innerHTML = '';
-            const errorMessage = document.createElement('div');
-            errorMessage.className = 'error-message';
-            errorMessage.textContent = 'Aqui se mostraran las notificaciones';
-            notificationsContainer.appendChild(errorMessage);
+            const noNotificationsMessage = document.createElement('div');
+            noNotificationsMessage.className = 'empty-message';
+            noNotificationsMessage.innerHTML = `
+                <img src="/mainPageProject/img/empty-notification.png" alt="No notifications" width="80">
+                <p>No tienes notificaciones pendientes</p>
+            `;
+            notificationsContainer.appendChild(noNotificationsMessage);
         }
     }
 
