@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     };
 
     const hideLoader = () => {
-        document.getElementById("loader2").classList.toggle("loader2")
+        document.getElementById("loader").classList.toggle("loader2")
     }
 
 
@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     // Cargar los calendarios
     async function loadCalendars() {
         calendarListContainer.innerHTML = '';
-        showLoader();
+        // showLoader();
         
         try {
             const response = await fetchWithAuth('https://notepadsbackend-production.up.railway.app/calendar/calendarList/', {
@@ -109,9 +109,8 @@ document.addEventListener('DOMContentLoaded', async function() {
             }
             
             calendars = await response.json();
-    
 
-            hideLoader();
+            // hideLoader();
             
             if (calendars.length === 0) {
                 // Mostrar mensaje cuando no hay calendarios
@@ -301,7 +300,6 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     // Cargar las notificaciones
     async function loadNotifications() {
-        showLoader();
         
         try {
             const response = await fetchWithAuth('https://notepadsbackend-production.up.railway.app/Noti/Notificaciones/', {
@@ -313,7 +311,6 @@ document.addEventListener('DOMContentLoaded', async function() {
             }
             
             const notifications = await response.json();
-            hideLoader();
 
             const closedNotifications = JSON.parse(localStorage.getItem('closedNotifications')) || [];
             
@@ -352,11 +349,12 @@ document.addEventListener('DOMContentLoaded', async function() {
             const noNotificationsMessage = document.createElement('div');
             noNotificationsMessage.className = 'empty-message';
             noNotificationsMessage.innerHTML = `
-                <img src="/mainPageProject/img/empty-notification.png" alt="No notifications" width="80">
-                <p>No tienes notificaciones pendientes</p>
+            <img src="/mainPageProject/img/empty-notification.png" alt="No notifications" width="80">
+            <p>No tienes notificaciones pendientes</p>
             `;
             notificationsContainer.appendChild(noNotificationsMessage);
         }
+        hideLoader()
     }
 
     // Configurar los botones de cierre para notificaciones
