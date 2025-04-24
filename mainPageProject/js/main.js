@@ -327,17 +327,19 @@ document.addEventListener('DOMContentLoaded', async function() {
                 `;
                 notificationsContainer.appendChild(noNotificationsMessage);
             } else {
+                indexNoti = 0;
                 // Mostrar notificaciones existentes
                 filteredNotificactions.forEach((notification, index) => {
                     const notificationElement = document.createElement('div');
                     notificationElement.className = 'notification';
-                    notificationElement.id = `notification-${index}`;
+                    notificationElement.id = `${notifications[indexNoti]["id"]}`;
                     notificationElement.innerHTML = `
                         <h3>${notification.Titulo}</h3>
                         <p>${notification.Mensaje}</p>
-                        <span class="close" data-notification-id="notification-${index}">&times;</span>
+                        <span class="close" data-notification-id="${notifications[indexNoti]["id"]}">&times;</span>
                     `;
                     notificationsContainer.appendChild(notificationElement);
+                    indexNoti += 1;
                 });
 
                 // Configurar los botones de cierre para las notificaciones
@@ -357,6 +359,25 @@ document.addEventListener('DOMContentLoaded', async function() {
         hideLoader()
     }
 
+    async function deleteNotification(idNotification){
+        
+        try {
+            const response = await fetchWithAuth('https://notepadsbackend-production.up.railway.app/Noti/updateNotification/',{
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 'idNotification' : idNotification }),
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+        } catch (error) {
+            console.error('Error deleting notification:', error);
+            showToast('It was not possible to delete the notification', 'error');
+        }
+    }
     // Configurar los botones de cierre para notificaciones
     function setupNotificationCloseButtons() {
         const closeButtons = document.querySelectorAll('.notification .close');
@@ -366,9 +387,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 const notificationId = this.getAttribute('data-notification-id');
                 const notification = document.getElementById(notificationId);
 
-                let closedNotifications = JSON.parse(localStorage.getItem('closedNotifications')) || [];
-                closedNotifications.push(notificationId);
-                localStorage.setItem('closedNotifications', JSON.stringify(closedNotifications));
+                deleteNotification(notificationId)
 
                 notification.classList.add('notification-closing');
                 
@@ -391,6 +410,37 @@ document.addEventListener('DOMContentLoaded', async function() {
             });
         });
     }
+    // // Configurar los botones de cierre para notificaciones
+    // function setupNotificationCloseButtons() {
+    //     const closeButtons = document.querySelectorAll('.notification .close');
+        
+    //     closeButtons.forEach(button => {
+    //         button.addEventListener('click', function() {
+    //             const notificationId = this.getAttribute('data-notification-id');
+    //             const notification = document.getElementById(notificationId);
+
+
+    //             notification.classList.add('notification-closing');
+                
+    //             // Animar la salida y luego eliminar
+    //             setTimeout(() => {
+    //                 notification.remove();
+                    
+    //                 // Verificar si no hay más notificaciones y mostrar mensaje
+    //                 if (document.querySelectorAll('.notification').length === 0) {
+    //                     const noNotificationsMessage = document.createElement('div');
+    //                     noNotificationsMessage.className = 'empty-message';
+    //                     noNotificationsMessage.innerHTML = `
+    //                         <img src="/mainPageProject/img/empty-notification.png" alt="No notifications" width="80">
+    //                         <p>No tienes notificaciones pendientes</p>
+    //                     `;
+    //                     notificationsContainer.appendChild(noNotificationsMessage);
+    //                 }
+    //             }, 300);
+                
+    //         });
+    //     });
+    // }
 
     // Modal para información del usuario
     function setupUserModal() {
